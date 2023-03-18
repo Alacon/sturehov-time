@@ -24,10 +24,10 @@
 			return 'p-2 border-fusion-blue shadow-2xl';
 		}
 		if (row.some((x) => x.includes('dag'))) {
-			return 'pt-3 border-transparent';
+			return 'pt-5 border-transparent';
 		}
 		if (row.some((x) => x.includes('KG'))) {
-			return 'pt-3 border-transparent';
+			return 'border-transparent';
 		}
 		if (onlyF12 && !row.some((x) => x.includes('F12'))) {
 			return 'hidden';
@@ -36,6 +36,13 @@
 	};
 
 	$: onlyF12 = true;
+
+	$: weeks = data.weeks.map((x) => {
+		return {
+			...x,
+			days: onlyF12 ? x.days.filter((x) => x.search.includes('F12')) : x.days
+		};
+	});
 </script>
 
 <div class="flex flex-col items-center relative bg-nightrider-black p-5 md:p-0">
@@ -49,33 +56,30 @@
 		>
 	</div>
 	<h1 class="text-white ">Sturehov tider på konstgräs!</h1>
-	{#each data?.schedule as item, i (item.title)}
-		<div
-			class="py-5 bg-vortex-black px-5 md:px-20 my-5 text-left w-full md:w-auto"
-		>
-			<h2 class="text-xl text-white font-bold  text-left">{item.title}</h2>
-			{#each item.left as leftRows}
-				<div
-					class="w-min whitespace-nowrap flex gap-x-2  text-left text-white/80  border-2 rounded {specialClassesRow(
-						leftRows
-					)}"
-				>
-					{#each leftRows as text}
-						<span class="{getSpecialClasses(text)} text-white/60  text-left">{text}</span>
+	{#if weeks}
+		{#each weeks as week}
+			<div class="py-5 bg-vortex-black px-5 md:px-20 my-5 text-left w-full md:w-auto">
+				<h2 class="text-xl text-white font-bold  text-left">{week.title}</h2>
+				{#each week.days as day}
+					<div
+						class="w-min whitespace-nowrap flex gap-x-2  text-left text-white/80  border-2 rounded {specialClassesRow(
+							[day.title]
+						)}"
+					>
+						{day.title}
+					</div>
+					{#each day.hours as hour}
+						<div
+							class="w-min whitespace-nowrap flex gap-x-2  text-left text-white/80  border-2 rounded 
+                            {specialClassesRow(hour)}"
+						>
+							{#each hour as item}
+								<span class="{getSpecialClasses(item)} text-white/60  text-left">{item}</span>
+							{/each}
+						</div>
 					{/each}
-				</div>
-			{/each}
-			{#each item.right as leftRows}
-				<div
-					class="w-min whitespace-nowrap flex gap-x-2  text-left text-white/80  border-2 rounded {specialClassesRow(
-						leftRows
-					)}"
-				>
-					{#each leftRows as text}
-						<span class="{getSpecialClasses(text)} text-white/60  text-left">{text}</span>
-					{/each}
-				</div>
-			{/each}
-		</div>
-	{/each}
+				{/each}
+			</div>
+		{/each}
+	{/if}
 </div>
