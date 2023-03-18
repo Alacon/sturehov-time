@@ -12,7 +12,7 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"engines": {
-		"node": "^14"
+		"node": "^16"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -33,10 +33,9 @@
 	"type": "module",
 	"dependencies": {
 		"autoprefixer": "^10.4.14",
-		"chrome-aws-lambda": "^10.1.0",
+		"node-html-parser": "^6.1.5",
 		"pdf2json": "2.0.1",
 		"postcss": "^8.4.21",
-		"puppeteer-core": "^19.7.5",
 		"tailwindcss": "^3.2.7"
 	}
 }

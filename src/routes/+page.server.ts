@@ -1,48 +1,40 @@
 import type { PageServerLoad } from './$types';
 import PDFParser from 'pdf2json';
+import { parse } from 'node-html-parser';
+const baseUrl = 'https://www.svenskalag.se';
+const url = `${baseUrl}/iksturehov/dokument#folder=52570`;
+export const load = (async ({ fetch }) => {
+	const schedule: any[] = [];
 
-import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
-const url = 'https://www.svenskalag.se/iksturehov/dokument#folder=52570';
-export const load = (async () => {
-	const schedule = [];
-	const browser = await puppeteer.launch({
-		args: chromium.args,
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: chromium.headless
-	});
+	const page = await fetch(url).then((x) => x.text());
+	const root = parse(page);
 
-	const page = await browser.newPage();
-
-	await page.goto(url);
-	const divs = await page.$$('div.folder-52570');
+	const divs = root.querySelectorAll('div.folder-52570');
 	for (const div of divs) {
-		const a = await div.$('a');
-		const href = await a?.evaluate((s) => s.href);
-		const title = await div.evaluate((div) => div.innerText);
-		if (!title.includes('Inomhus') && href) {
-			const result = await getPdfData(title.split('.pdf')[0], href);
-			schedule.push({
-				...result,
+		const a = div.querySelector('a');
+		const href = a?.attrs['href'];
+		const title = div.text.trim().split('.pdf')[0];
+
+		const res = await fetch(`${baseUrl}${href}`);
+		const buffer = await res.arrayBuffer();
+		const resultSchedule = await getPdfData(buffer).then((result) => {
+			return {
+				title,
 				left: result.left.map((x) => x.items.map((y) => decodeURIComponent(y))),
 				right: result.right.map((x) => x.items.map((y) => decodeURIComponent(y)))
-			});
-		}
-	}
+			};
+		});
 
-	setTimeout(() => {
-		page.close();
-		browser.close();
-	}, 500);
+		schedule.push(resultSchedule);
+	}
 
 	return { schedule };
 }) satisfies PageServerLoad;
 
-const getPdfData = async (title: string, url: string): Promise<Schedule> => {
+const getPdfData = async (buffer: ArrayBuffer): Promise<Schedule> => {
+	console.log(url);
+
 	return new Promise(async (resolve, reject) => {
-		const res = await fetch(url);
-		const buffer = await res.arrayBuffer();
 		let left: IRow[] = [];
 		let right: IRow[] = [];
 		const pdfParser = new PDFParser();
@@ -61,7 +53,7 @@ const getPdfData = async (title: string, url: string): Promise<Schedule> => {
 			rightColumn.forEach((x) => {
 				right = mapColumns(x, right);
 			});
-			resolve({ title, left, right } as Schedule);
+			resolve({ title: '', left, right } as Schedule);
 		});
 		pdfParser.parseBuffer(buffer);
 	});
