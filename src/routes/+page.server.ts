@@ -4,7 +4,7 @@ import { parse } from 'node-html-parser';
 import { getWeek } from 'date-fns';
 const baseUrl = 'https://www.svenskalag.se';
 const url = `${baseUrl}/iksturehov/dokument#folder=52570`;
-export const load = (async ({ fetch }) => {
+export const load = (async ({ fetch, setHeaders }) => {
 	const schedule: any[] = [];
 	const weekNr = getWeek(new Date());
 
@@ -32,12 +32,13 @@ export const load = (async ({ fetch }) => {
 		}
 	}
 
+	setHeaders({
+		'cache-control': 'public, max-age=300'
+	});
 	return { schedule };
 }) satisfies PageServerLoad;
 
 const getPdfData = async (buffer: ArrayBuffer): Promise<Schedule> => {
-	console.log(url);
-
 	return new Promise(async (resolve, reject) => {
 		let left: IRow[] = [];
 		let right: IRow[] = [];
