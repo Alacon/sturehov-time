@@ -47,7 +47,7 @@
 			class="rounded-full p-3 transition-colors bg-fusion-blue/50 hover:bg-fusion-blue text-nightrider-black">F12</button
 		>
 	</div>
-    <h1 class="text-white ">Sturehov tider på konstgräs</h1>
+    <h1 class="text-white ">Sturehov tider på konstgräs!</h1>
 	{#each data?.schedule as item, i}
 		<div in:fade={{ delay: i * 250 }} class="py-5 bg-vortex-black px-5 md:px-20 my-5 text-left w-full md:w-auto">
 			<h2 class="text-xl text-white font-bold  text-left">{item.title}</h2>
