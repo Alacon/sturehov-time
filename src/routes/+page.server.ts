@@ -1,11 +1,18 @@
 import type { PageServerLoad } from './$types';
 import PDFParser from 'pdf2json';
 
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 const url = 'https://www.svenskalag.se/iksturehov/dokument#folder=52570';
 export const load = (async () => {
 	const schedule = [];
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({
+		args: chromium.args,
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath,
+		headless: chromium.headless
+	});
+
 	const page = await browser.newPage();
 
 	await page.goto(url);

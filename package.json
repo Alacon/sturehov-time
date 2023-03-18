@@ -33,7 +33,7 @@
 		"chrome-aws-lambda": "^10.1.0",
 		"pdf2json": "2.0.1",
 		"postcss": "^8.4.21",
-		"puppeteer": "^19.7.5",
+		"puppeteer-core": "^19.7.5",
 		"tailwindcss": "^3.2.7"
 	}
 }
