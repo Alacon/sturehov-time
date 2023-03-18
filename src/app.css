@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* colors */
+:root {
+    --color-primary: 255 00 168;
+    --color-primary-darkened: 90 5 66;
+    --color-primary-accent: 144 14 105;
+    --color-secondary: 0 255 209;
+    --color-error: 255 54 54;
+    --color-warning: 255 204 0;
+    --color-secondary-accent: 255 204 0;
+    --color-info: 50 166 255;
+    --color-background: 39 39 39;
+    --color-onBackground: 90 90 90;
+    --color-defaultText: 255 255 255;
+    --color-surface: 47 47 47;
+    --color-surfaceAccent: 83 83 83;
+    --color-onSurface: 150 150 150;
+    --color-secondarySurface: 65 65 65;
+    --color-onSecondarySurface: 255 255 255;
+  
+    --color-midnightBlack: 0 0 0;
+    --color-vortexBlack: 12 12 12;
+    --color-nightriderBlack: 23 23 23;
+    --color-charcoalBlack: 27 27 27;
+    --color-chromeGrey: 220 220 220;
+    --color-tarmacGrey: 83 83 83;
+    --color-brushedMetalGrey: 150 150 150;
+    --color-spaceBlack: 47 47 47;
+    --color-sunrayYellow: 255 221 25;
+    --color-electroGreen: 0 255 209;
+    --color-fusionBlue: 0 239 255;
+    --color-lazyPurple: 90 5 66;
+    --color-hazyPurple: 144 14 105;
+    --color-wetAsphalt: 59 59 59;
+    --color-smurfBlue: 50 166 255;
+    --color-hotRed: 255 54 54;
+  
+    --date-picker-foreground: #969696;
+    --date-picker-background: #000000;
+    --date-picker-highlight-border: #7afab5;
+    --date-picker-highlight-shadow: #7afab5;
+    --date-picker-selected-color: #fff;
+    --date-picker-selected-background: #000000;
+  }
