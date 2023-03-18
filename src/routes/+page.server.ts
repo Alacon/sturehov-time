@@ -1,10 +1,12 @@
 import type { PageServerLoad } from './$types';
 import PDFParser from 'pdf2json';
 import { parse } from 'node-html-parser';
+import { getWeek } from 'date-fns';
 const baseUrl = 'https://www.svenskalag.se';
 const url = `${baseUrl}/iksturehov/dokument#folder=52570`;
 export const load = (async ({ fetch }) => {
 	const schedule: any[] = [];
+	const weekNr = getWeek(new Date());
 
 	const page = await fetch(url).then((x) => x.text());
 	const root = parse(page);
@@ -14,18 +16,20 @@ export const load = (async ({ fetch }) => {
 		const a = div.querySelector('a');
 		const href = a?.attrs['href'];
 		const title = div.text.trim().split('.pdf')[0];
+		const weekNumber = +title.split(' ')[1].slice(1);
 
-		const res = await fetch(`${baseUrl}${href}`);
-		const buffer = await res.arrayBuffer();
-		const resultSchedule = await getPdfData(buffer).then((result) => {
-			return {
-				title,
-				left: result.left.map((x) => x.items.map((y) => decodeURIComponent(y))),
-				right: result.right.map((x) => x.items.map((y) => decodeURIComponent(y)))
-			};
-		});
-
-		schedule.push(resultSchedule);
+		if (!title.includes('Inomhus') && weekNumber >= weekNr) {
+			const res = await fetch(`${baseUrl}${href}`);
+			const buffer = await res.arrayBuffer();
+			const resultSchedule = await getPdfData(buffer).then((result) => {
+				return {
+					title,
+					left: result.left.map((x) => x.items.map((y) => decodeURIComponent(y))),
+					right: result.right.map((x) => x.items.map((y) => decodeURIComponent(y)))
+				};
+			});
+			schedule.push(resultSchedule);
+		}
 	}
 
 	return { schedule };
